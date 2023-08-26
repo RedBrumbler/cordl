@@ -1520,6 +1520,7 @@ pub trait CSType: Sized {
             .map(|t| format!("::il2cpp_utils::il2cpp_type_check::il2cpp_no_arg_type<{t}>::get()"))
             .join(", ");
 
+        let declaring_classof_call = format!("::il2cpp_utils::il2cpp_type_check::il2cpp_no_arg_class<{}>::get()", cpp_type.formatted_complete_cpp_name());
         let method_info_lines = match &template {
             Some(template) => {
                 // generic
@@ -1535,7 +1536,7 @@ pub trait CSType: Sized {
 
                 vec![
                     format!("static auto* ___internal_method_base = THROW_UNLESS((::il2cpp_utils::FindMethod(
-                        {instance_ptr}, 
+                        {declaring_classof_call},
                         \"{m_name}\",
                         std::vector<Il2CppClass*>{{{generics_classes_format}}}, 
                         ::std::vector<const Il2CppType*>{{{params_types_format}}}
@@ -1549,7 +1550,7 @@ pub trait CSType: Sized {
             None => {
                 vec![
                     format!("static auto* {METHOD_INFO_VAR_NAME} = THROW_UNLESS((::il2cpp_utils::FindMethod(
-                            {instance_ptr},
+                            {declaring_classof_call},
                             \"{m_name}\",
                             std::vector<Il2CppClass*>{{}}, 
                             ::std::vector<const Il2CppType*>{{{params_types_format}}}
