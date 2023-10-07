@@ -126,6 +126,11 @@ pub fn layout_fields<'a>(
         instance_size = update_instance_size_for_generic_class(declaring_ty_def, declaring_tdi, instance_size, metadata);
     }
 
+    // if we have an explicit size, use that
+    if declaring_ty_def.is_explicit_layout() && let Some (sz) = get_size_of_type_table(metadata, declaring_tdi) {
+        instance_size = sz.instance_size as usize;
+    }
+
     SizeAndAlignment {
         size: instance_size,
         actual_size: actual_size,
@@ -171,7 +176,7 @@ fn layout_instance_fields<'a>(
         let mut offset = actual_size;
 
         offset += (alignment - 1) as usize;
-        offset &= !(alignment - 1) as usize;
+        offset &= !(alignment as usize - 1);
 
         // explicit layout & we have a value in the offset table
         if declaring_ty_def.is_explicit_layout() && let Some(special_offset) = get_offset_of_type_table(metadata, declaring_tdi, i) {
