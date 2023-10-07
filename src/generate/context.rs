@@ -11,7 +11,7 @@ use brocolib::global_metadata::TypeDefinitionIndex;
 use color_eyre::eyre::ContextCompat;
 
 use itertools::Itertools;
-use log::trace;
+use log::{trace, info};
 use pathdiff::diff_paths;
 
 use crate::generate::members::CppForwardDeclare;
