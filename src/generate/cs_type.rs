@@ -505,11 +505,11 @@ pub trait CSType: Sized {
                     "Computing offsets for TDI: {:?}, as it has a size of 0",
                     tdi
                 );
-                let _resulting_size = offsets::layout_fields_for_type(
+                let _resulting_size = offsets::layout_fields(
+                    metadata,
                     t,
                     tdi,
                     cpp_type.generic_instantiations_args_types.as_ref(),
-                    metadata,
                     Some(&mut offsets),
                 );
             }
