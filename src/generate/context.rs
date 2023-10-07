@@ -147,7 +147,7 @@ impl CppContext {
                 x.insert_cpp_type(cpptype);
             }
             None => {
-                println!(
+                info!(
                     "Unable to create valid CppContext for type: {}!",
                     t.full_name(metadata.metadata, true)
                 );
