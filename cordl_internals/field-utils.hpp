@@ -43,7 +43,6 @@ namespace cordl_internals {
   template<il2cpp_reference_type T, std::size_t offset, il2cpp_reference_type InstT>
   CORDL_HIDDEN void setInstanceField(InstT& instance, T&& v) {
     OFFSET_CHECK(InstT::__CORDL_REFERENCE_TYPE_SIZE, offset, sizeof(void*), "offset is too large for the size of the instance to be assigned correctly!");
-    SIZE_CHECK(T, "wrapper size was different from the type it wraps!");
 
     ::il2cpp_functions::Init();
     ::il2cpp_functions::gc_wbarrier_set_field(reinterpret_cast<Il2CppObject*>(instance.convert()), getAtOffset<offset>(instance.convert()), v.convert());
@@ -54,7 +53,6 @@ namespace cordl_internals {
   CORDL_HIDDEN void setInstanceField(std::array<std::byte, sz>& instance, T&& v) {
     // TODO: should assigning a ref type field on a value type instance also require wbarrier?
     OFFSET_CHECK(sz, offset, sizeof(void*), "offset is too large for the size of the instance to be assigned correctly!");
-    SIZE_CHECK(T, "wrapper size was different from the type it wraps!");
 
     std::copy_n(std::bit_cast<std::array<std::byte, sizeof(void*)>>(v.convert()).begin(), sizeof(void*), std::next(instance.begin(), offset));
   }
@@ -63,6 +61,7 @@ namespace cordl_internals {
   template<il2cpp_value_type T, std::size_t offset, il2cpp_reference_type InstT>
   CORDL_HIDDEN void setInstanceField(InstT& instance, T&& v) {
     OFFSET_CHECK(InstT::__CORDL_REFERENCE_TYPE_SIZE, offset, T::__CORDL_VALUE_TYPE_SIZE, "offset is too large for the size of the instance to be assigned correctly!");
+
     std::memcpy(getAtOffset<offset>(instance.convert()), v.convert(), T::__CORDL_VALUE_TYPE_SIZE);
   }
 
@@ -137,20 +136,18 @@ namespace cordl_internals {
 
   /// @brief get reference type value @ offset on instance
   template <il2cpp_reference_type T, std::size_t offset, il2cpp_reference_type InstT>
-  [[nodiscard]] CORDL_HIDDEN T& getInstanceField(InstT const& instance) {
+  [[nodiscard]] CORDL_HIDDEN T getInstanceField(InstT const& instance) {
     OFFSET_CHECK(InstT::__CORDL_REFERENCE_TYPE_SIZE, offset, sizeof(void*), "offset is too large for the size of the instance to be retreived correctly!");
-    SIZE_CHECK(T, "wrapper size was different from the type it wraps!");
 
-    return *static_cast<T*>(static_cast<void*>(getAtOffset<offset>(instance.convert())));
+    return T(*getAtOffset<offset>(instance.convert()));
   }
 
   /// @brief get reference type value @ offset on instance of size sz
   template <il2cpp_reference_type T, std::size_t offset, std::size_t sz>
-  [[nodiscard]] CORDL_HIDDEN constexpr T& getInstanceField(std::array<std::byte, sz> const &instance) {
+  [[nodiscard]] CORDL_HIDDEN constexpr T getInstanceField(std::array<std::byte, sz> const &instance) {
     OFFSET_CHECK(sz, offset, sizeof(void*), "offset is too large for the size of the instance to be retreived correctly!");
-    SIZE_CHECK(T, "wrapper size was different from the type it wraps!");
 
-    return *const_cast<T*>(static_cast<const T*>(static_cast<const void*>(instance.data() + offset)));
+    return T(static_cast<void**>(static_cast<void*>(const_cast<std::byte*>(instance.data() + offset))));
   }
 
   /// @brief get value type value @ offset on instance

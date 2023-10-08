@@ -719,7 +719,7 @@ pub trait CSType: Sized {
                 let getter_decl = CppMethodDecl {
                     cpp_name: getter_name,
                     instance: is_instance,
-                    return_type: format!("{field_ty_cpp_name}{}", if is_instance { "&" } else { "" }),
+                    return_type: format!("{field_ty_cpp_name}{}", if is_instance && cpp_type.is_value_type { "&" } else { "" }),
 
                     brief: None,
                     body: None, // TODO:
