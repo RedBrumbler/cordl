@@ -1459,13 +1459,6 @@ pub trait CSType: Sized {
             return;
         }
 
-        cpp_type.declarations.push(
-            CppMember::CppLine(CppLine {
-                line: format!("virtual ~{cpp_name}() = default;"),
-            })
-            .into(),
-        );
-
         let copy_ctor = CppConstructorDecl {
             cpp_name: cpp_name.clone(),
             parameters: vec![CppParam {
@@ -1547,13 +1540,6 @@ pub trait CSType: Sized {
     fn make_interface_constructors(&mut self) {
         let cpp_type = self.get_mut_cpp_type();
         let cpp_name = cpp_type.cpp_name().clone();
-
-        cpp_type.declarations.push(
-            CppMember::CppLine(CppLine {
-                line: format!("~{cpp_name}() = default;"),
-            })
-            .into(),
-        );
 
         let base_type = cpp_type
             .inherit
