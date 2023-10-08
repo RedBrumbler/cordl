@@ -196,12 +196,12 @@ namespace cordl_internals {
     };
 
     template<il2cpp_reference_type T>
-    struct il2cpp_size {
+    struct il2cpp_size<T> {
         static constexpr auto value = sizeof(void*);
     };
 
     template<il2cpp_value_type T>
-    struct il2cpp_size {
+    struct il2cpp_size<T> {
         static constexpr auto value = T::__CORDL_VALUE_TYPE_SIZE;
     };
 
